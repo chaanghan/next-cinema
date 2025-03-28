@@ -1,4 +1,6 @@
+import SearchLayout from '@/components/search-layout';
 import { useRouter } from 'next/router';
+import { ReactNode } from 'react';
 
 export default function Search() {
   const router = useRouter();
@@ -6,3 +8,7 @@ export default function Search() {
 
   return <h2>검색 결과 : {q}</h2>;
 }
+
+Search.getLayout = (page: ReactNode) => {
+  return <SearchLayout>{page}</SearchLayout>;
+};

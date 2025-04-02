@@ -1,10 +1,18 @@
 import style from './[id].module.css';
 import fetchMovie from '@/lib/fetchMovie';
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import fetchMovies from '@/lib/fetchMovies';
+import { GetStaticPropsContext, InferGetStaticPropsType } from 'next';
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
+export const getStaticPaths = async () => {
+  const movies = await fetchMovies();
+
+  return {
+    paths: movies.map((movie) => ({ params: { id: String(movie.id) } })),
+    fallback: true,
+  };
+};
+
+export const getStaticProps = async (context: GetStaticPropsContext) => {
   const movieId = Number(context.params!.id);
   const movie = await fetchMovie(movieId);
 
@@ -14,7 +22,7 @@ export const getServerSideProps = async (
 };
 export default function Movie({
   movie,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!movie) return '데이터를 찾을 수 없습니다.';
   const {
     id,
